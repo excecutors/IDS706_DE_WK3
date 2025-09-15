@@ -10,13 +10,15 @@ import polars as pl
 from io import StringIO
 import os
 
-# Local dataset path (preferred way)
-DATA_PATH = "data/gold_data_2015_25.csv"
+# -----------------------------
+# Config (defaults = local CSV)
+# -----------------------------
+DATA_PATH = os.getenv("DATA_PATH", "data/gold_data_2015_25.csv")
+USE_S3    = os.getenv("USE_S3", "0")  # "1" to force S3, otherwise local
 
-# Optional: AWS S3 fallback (only for repo owner, not graders)
-BUCKET = "kaggle-gold-dataset"
-KEY = "gold_data_2015_25.csv"
-REGION = "us-east-2"
+BUCKET = os.getenv("BUCKET", "kaggle-gold-dataset")
+KEY    = os.getenv("KEY", "gold_data_2015_25.csv")
+REGION = os.getenv("REGION", "us-east-2")
 
 def _load_from_s3(bucket: str, key: str, region: str) -> pl.DataFrame:
     import boto3
@@ -25,10 +27,18 @@ def _load_from_s3(bucket: str, key: str, region: str) -> pl.DataFrame:
     csv_text = obj["Body"].read().decode("utf-8")
     return pl.read_csv(StringIO(csv_text))
 
-# Resolution order: LOCAL -> S3 (only if local file is missing)
-if os.path.exists(DATA_PATH):
+# ---------------------------------------
+# Resolution order:
+#   1) If USE_S3 == "1" -> use S3
+#   2) Else try local CSV (DATA_PATH)
+#   3) Else (optional) fall back to S3
+# ---------------------------------------
+if USE_S3 == "1":
+    df = _load_from_s3(BUCKET, KEY, REGION)
+elif os.path.exists(DATA_PATH):
     df = pl.read_csv(DATA_PATH)
 else:
+    # last-resort fallback (you can delete this branch if you want to forbid S3 for graders)
     df = _load_from_s3(BUCKET, KEY, REGION)
 
 # ## Inspect the Data
