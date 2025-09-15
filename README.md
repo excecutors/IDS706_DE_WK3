@@ -154,3 +154,6 @@ docker run -it ids706-wk3:latest pytest -q
 * **Testing** validates correctness of data pipeline and models.
 * **Polars** provides fast, efficient data handling.
 * **XGBoost** outperforms Linear Regression significantly.
+
+## Docker App
+<img width="2520" height="1432" alt="image" src="https://github.com/user-attachments/assets/4bf57b4d-ec1d-4994-972e-f7109a4e2992" />
