@@ -1,31 +1,31 @@
 {
-  "name": "IDS706 Week 3",
-  "build": {
+    "name": "IDS706 Week 3",
     "context": "..",
-    "dockerFile": "Dockerfile"
-  },
-
-  // Mount your repo into /app so your existing paths work (analysis.py reads data/ and writes outputs/)
-  "workspaceFolder": "/app",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind,consistency=cached",
-
-  // Helpful VS Code extensions inside the container
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-python.python",
-        "ms-toolsai.jupyter",
-        "ms-azuretools.vscode-docker"
-      ]
-    }
-  },
-
-  // After the container is ready, run tests to confirm the environment works
-  "postCreateCommand": "pytest -q || true",
-
-  // If you ever need AWS creds inside the dev container, uncomment and adjust:
-  // "runArgs": ["-v", "${env:HOME}/.aws:/root/.aws:ro"]
+    "dockerFile": "../Dockerfile",
   
-  // (Optional) If you prefer a non-root user, uncomment:
-  // "remoteUser": "vscode"
-}
+    // If your Dockerfile already installs requirements, this is optional:
+    "postCreateCommand": "make install || true",
+  
+    // Mount outputs so they persist between rebuilds
+    "mounts": [
+      "source=${localWorkspaceFolder}/outputs,target=/app/outputs,type=bind"
+    ],
+  
+    // Optional editor conveniences inside the container
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "python.defaultInterpreterPath": "/usr/local/bin/python",
+          "terminal.integrated.defaultProfile.linux": "bash"
+        },
+        "extensions": [
+          "ms-python.python",
+          "ms-python.vscode-pylance",
+          "ms-azuretools.vscode-docker"
+        ]
+      }
+    },
+  
+    // No ports needed (script just runs & exits)
+    "runArgs": []
+  }  
