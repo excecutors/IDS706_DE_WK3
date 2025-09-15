@@ -1,0 +1,31 @@
+{
+  "name": "IDS706 Week 3",
+  "build": {
+    "context": "..",
+    "dockerFile": "Dockerfile"
+  },
+
+  // Mount your repo into /app so your existing paths work (analysis.py reads data/ and writes outputs/)
+  "workspaceFolder": "/app",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind,consistency=cached",
+
+  // Helpful VS Code extensions inside the container
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-toolsai.jupyter",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+
+  // After the container is ready, run tests to confirm the environment works
+  "postCreateCommand": "pytest -q || true",
+
+  // If you ever need AWS creds inside the dev container, uncomment and adjust:
+  // "runArgs": ["-v", "${env:HOME}/.aws:/root/.aws:ro"]
+  
+  // (Optional) If you prefer a non-root user, uncomment:
+  // "remoteUser": "vscode"
+}
