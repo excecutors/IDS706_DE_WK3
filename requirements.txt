@@ -1,0 +1,13 @@
+pylint
+flake8
+pytest
+click
+black
+pytest-cov
+boto3
+polars
+seaborn
+matplotlib
+scikit-learn
+numpy
+xgboost
