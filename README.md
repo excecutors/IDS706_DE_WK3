@@ -19,7 +19,6 @@ The dataset contains gold prices and related market data (**SPX, GLD, USO, SLV, 
 
 ```
 IDS706_DE_WK3/
-│── analysis.ipynb      # Jupyter notebook version
 │── analysis.py         # Core Python script (runs full pipeline)
 │── requirements.txt    # Python dependencies
 │── Dockerfile          # Docker environment definition
