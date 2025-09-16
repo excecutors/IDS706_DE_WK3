@@ -164,26 +164,6 @@ docker run -it --rm ids706-wk3:latest pytest -q
 
 ---
 
-## Example Results (typical)
-
-* **Linear Regression**: R² ≈ 0.92, RMSE ≈ 12.8
-* **XGBoost**: R² ≈ 0.99, RMSE ≈ 3.8 (excellent fit, no major overfitting)
-* **Plots**:
-
-  * Histogram of gold prices → `outputs/gld_hist.png`
-  * SPX vs GLD scatter plot → `outputs/spx_vs_gld.png`
-
----
-
-## Key Takeaways
-
-* **Docker** guarantees reproducibility → same results across machines.
-* **Testing** validates correctness of data pipeline and models.
-* **Polars** provides fast, efficient data handling.
-* **XGBoost** outperforms Linear Regression significantly.
-
----
-
 ## Run in GitHub Codespaces (Step‑by‑Step)
 
 > This repo is already set up to run from the **local CSV** in `data/`. You don’t need AWS.
@@ -228,3 +208,23 @@ python analysis.py
 
   * `outputs/gld_hist.png`
   * `outputs/spx_vs_gld.png`
+
+---
+
+## Example Results (typical)
+
+* **Linear Regression**: R² ≈ 0.92, RMSE ≈ 12.8
+* **XGBoost**: R² ≈ 0.99, RMSE ≈ 3.8 (excellent fit, no major overfitting)
+* **Plots**:
+
+  * Histogram of gold prices → `outputs/gld_hist.png`
+  * SPX vs GLD scatter plot → `outputs/spx_vs_gld.png`
+
+---
+
+## Key Takeaways
+
+* **Docker** guarantees reproducibility → same results across machines.
+* **Testing** validates correctness of data pipeline and models.
+* **Polars** provides fast, efficient data handling.
+* **XGBoost** outperforms Linear Regression significantly.
