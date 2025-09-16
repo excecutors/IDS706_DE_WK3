@@ -182,6 +182,9 @@ docker run -it --rm ids706-wk3:latest pytest -q
 * **Polars** provides fast, efficient data handling.
 * **XGBoost** outperforms Linear Regression significantly.
 
+---
+---
+
 ## Run in GitHub Codespaces (Step‑by‑Step)
 
 > This repo is already set up to run from the **local CSV** in `data/`. You don’t need AWS.
