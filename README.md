@@ -182,7 +182,7 @@ docker run -it --rm ids706-wk3:latest pytest -q
 * **Polars** provides fast, efficient data handling.
 * **XGBoost** outperforms Linear Regression significantly.
 
-> ---
+---
 
 ## Run in GitHub Codespaces (Step‑by‑Step)
 
