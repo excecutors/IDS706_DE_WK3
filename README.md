@@ -62,7 +62,7 @@ REGION=us-east-2
 
 ---
 
-## Run Locally (recommended for quick checks)
+## Run Locally
 
 ```bash
 # 1) Create a virtualenv
@@ -164,7 +164,7 @@ docker run -it --rm ids706-wk3:latest pytest -q
 
 ---
 
-## Run in GitHub Codespaces (Step‑by‑Step)
+## Run in GitHub Codespaces (recommended for quick checks)
 
 > This repo is already set up to run from the **local CSV** in `data/`. You don’t need AWS.
 
