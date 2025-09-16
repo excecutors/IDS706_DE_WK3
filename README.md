@@ -181,3 +181,48 @@ docker run -it --rm ids706-wk3:latest pytest -q
 * **Testing** validates correctness of data pipeline and models.
 * **Polars** provides fast, efficient data handling.
 * **XGBoost** outperforms Linear Regression significantly.
+
+## Run in GitHub Codespaces (Step‑by‑Step)
+
+> This repo is already set up to run from the **local CSV** in `data/`. You don’t need AWS.
+
+### 1) Open the repo in a Codespace
+
+* Go to your GitHub repository page.
+* Click **Code ▸ Codespaces** tab ▸ **Create codespace on main** (or your branch).
+* Wait for the container to build and Github Codespace to open in the browser.
+
+### 2) Confirm you’re inside the dev container
+
+```bash
+[ -f /.dockerenv ] && echo "Inside container" || echo "Not in container"
+echo $CODESPACES   # should print: true
+python --version
+```
+
+### 3) Install Python dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+> If `pip` is not found, try `pip3`. If you prefer isolation: `python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`.
+
+### 4) Run the tests
+
+```bash
+pytest -q
+```
+
+* You should see all tests pass.
+
+### 5) Run the analysis script
+
+```bash
+python analysis.py
+```
+
+* The script prints dataset diagnostics to the terminal and saves plots into **`outputs/`**:
+
+  * `outputs/gld_hist.png`
+  * `outputs/spx_vs_gld.png`
