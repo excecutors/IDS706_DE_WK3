@@ -41,11 +41,10 @@ IDS706_DE_WK3/
 
 ## How `analysis.py` finds data (no code changes needed)
 
-`analysis.py` supports **three** sources, in this order:
+`analysis.py` supports **two** sources, in this order:
 
-1. If `USE_S3=="1"` → load from **S3** (owner only) using `BUCKET/KEY/REGION` env vars.
-2. Else if `DATA_PATH` exists → load the **local CSV** (default: `data/gold_data_2015_25.csv`).
-3. Else → fallback to **S3** (you may remove this fallback if you want to forbid S3 for graders).
+1. `DATA_PATH` exists → load the **local CSV** (default: `data/gold_data_2015_25.csv`).
+2. Else → fallback to **S3**
 
 Environment variables you can use (all optional):
 
