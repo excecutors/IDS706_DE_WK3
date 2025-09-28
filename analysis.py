@@ -1,31 +1,46 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from io import StringIO
+import os
+
+import numpy as np
+import polars as pl
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.model_selection import train_test_split
+from xgboost import XGBRegressor
+
+
 # ## Pull from AWS S3
 
 # In[4]:
-
-
-import polars as pl
-from io import StringIO
-import os
 
 # -----------------------------
 # Config (defaults = local CSV)
 # -----------------------------
 DATA_PATH = os.getenv("DATA_PATH", "data/gold_data_2015_25.csv")
-USE_S3    = os.getenv("USE_S3", "0")  # "1" to force S3, otherwise local
+USE_S3 = os.getenv("USE_S3", "0")  # "1" to force S3, otherwise local
 
 BUCKET = os.getenv("BUCKET", "kaggle-gold-dataset")
-KEY    = os.getenv("KEY", "gold_data_2015_25.csv")
+KEY = os.getenv("KEY", "gold_data_2015_25.csv")
 REGION = os.getenv("REGION", "us-east-2")
+
+os.makedirs("outputs", exist_ok=True)
+
 
 def _load_from_s3(bucket: str, key: str, region: str) -> pl.DataFrame:
     import boto3
+
     s3 = boto3.client("s3", region_name=region)
     obj = s3.get_object(Bucket=bucket, Key=key)
     csv_text = obj["Body"].read().decode("utf-8")
     return pl.read_csv(StringIO(csv_text))
+
 
 # ---------------------------------------
 # Resolution order:
@@ -38,7 +53,7 @@ if USE_S3 == "1":
 elif os.path.exists(DATA_PATH):
     df = pl.read_csv(DATA_PATH)
 else:
-    # last-resort fallback (you can delete this branch if you want to forbid S3 for graders)
+    # last-resort fallback
     df = _load_from_s3(BUCKET, KEY, REGION)
 
 # ## Inspect the Data
@@ -95,13 +110,6 @@ print(yearly_avg)
 
 # In[11]:
 
-import os
-os.makedirs("outputs", exist_ok=True)
-
-import matplotlib
-matplotlib.use("Agg")  # headless backend
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Histogram -- save plots as files
 gld = df["GLD"].to_numpy()
@@ -129,18 +137,14 @@ plt.clf()
 
 # In[12]:
 
-
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
-import numpy as np
-
 # Convert Polars → NumPy for sklearn
 X = df.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
 y = df["GLD"].to_numpy()
 
 # Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # Fit model
 model = LinearRegression()
@@ -161,13 +165,6 @@ print("RMSE:", rmse)
 
 # In[13]:
 
-
-import numpy as np
-import polars as pl
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error, r2_score
-from xgboost import XGBRegressor
-
 # Features/target from Polars to NumPy
 X = df.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
 y = df["GLD"].to_numpy()
@@ -179,14 +176,14 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Fit XGBoost Regressor
 model = XGBRegressor(
-    n_estimators=500,       # number of trees
-    learning_rate=0.05,     # step size shrinkage
-    max_depth=4,            # complexity of trees
-    subsample=0.8,          # row sampling (regularization)
-    colsample_bytree=0.8,   # feature sampling (regularization)
+    n_estimators=500,  # number of trees
+    learning_rate=0.05,  # step size shrinkage
+    max_depth=4,  # complexity of trees
+    subsample=0.8,  # row sampling (regularization)
+    colsample_bytree=0.8,  # feature sampling (regularization)
     random_state=42,
-    reg_lambda=1,           # L2 regularization
-    n_jobs=-1
+    reg_lambda=1,  # L2 regularization
+    n_jobs=-1,
 )
 
 model.fit(X_train, y_train)
@@ -194,6 +191,7 @@ model.fit(X_train, y_train)
 # Predictions
 y_train_pred = model.predict(X_train)
 y_test_pred = model.predict(X_test)
+
 
 # Metrics
 def eval_metrics(y_true, y_pred, label="Test"):
@@ -205,6 +203,6 @@ def eval_metrics(y_true, y_pred, label="Test"):
     print(f"{label} RMSE: {rmse:.4f}")
     print("-" * 30)
 
+
 eval_metrics(y_train, y_train_pred, "Train")
 eval_metrics(y_test, y_test_pred, "Test")
-

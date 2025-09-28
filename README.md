@@ -1,3 +1,5 @@
+![CI](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml/badge.svg)
+
 # IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker)
 
 This repo contains a **reproducible** and **testable** data analysis workflow using:
@@ -207,23 +209,3 @@ python analysis.py
 
   * `outputs/gld_hist.png`
   * `outputs/spx_vs_gld.png`
-
----
-
-## Example Results (typical)
-
-* **Linear Regression**: R² ≈ 0.92, RMSE ≈ 12.8
-* **XGBoost**: R² ≈ 0.99, RMSE ≈ 3.8 (excellent fit, no major overfitting)
-* **Plots**:
-
-  * Histogram of gold prices → `outputs/gld_hist.png`
-  * SPX vs GLD scatter plot → `outputs/spx_vs_gld.png`
-
----
-
-## Key Takeaways
-
-* **Docker** guarantees reproducibility → same results across machines.
-* **Testing** validates correctness of data pipeline and models.
-* **Polars** provides fast, efficient data handling.
-* **XGBoost** outperforms Linear Regression significantly.

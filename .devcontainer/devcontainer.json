@@ -8,7 +8,7 @@
   
     // Mount outputs so they persist between rebuilds
     "mounts": [
-      "source=${localWorkspaceFolder}/outputs,target=/app/outputs,type=bind"
+      "source=${localWorkspaceFolder}/outputs,target=/app/outputs,type=bind"  
     ],
   
     // Optional editor conveniences inside the container
@@ -28,4 +28,4 @@
   
     // No ports needed (script just runs & exits)
     "runArgs": []
-  } 
+  }

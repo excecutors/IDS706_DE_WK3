@@ -5,6 +5,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV AWS_DEFAULT_REGION=us-east-2
 
+ENV MPLBACKEND=Agg
+
 # XGBoost needs libgomp on slim variants
 RUN apt-get update && apt-get install -y --no-install-recommends libgomp1 \
     && rm -rf /var/lib/apt/lists/*

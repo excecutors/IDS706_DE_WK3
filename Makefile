@@ -18,6 +18,9 @@ install: venv
 format:
 	$(VENV)/bin/black *.py
 
+format-check:
+	$(VENV)/bin/black --check *.py
+
 lint:
 	$(VENV)/bin/flake8 *.py
 
