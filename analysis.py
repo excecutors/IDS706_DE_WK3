@@ -49,37 +49,37 @@ def _load_from_s3(bucket: str, key: str, region: str) -> pl.DataFrame:
 #   3) Else (optional) fall back to S3
 # ---------------------------------------
 if USE_S3 == "1":
-    df = _load_from_s3(BUCKET, KEY, REGION)
+    prices = _load_from_s3(BUCKET, KEY, REGION)
 elif os.path.exists(DATA_PATH):
-    df = pl.read_csv(DATA_PATH)
+    prices = pl.read_csv(DATA_PATH)
 else:
     # last-resort fallback
-    df = _load_from_s3(BUCKET, KEY, REGION)
+    prices = _load_from_s3(BUCKET, KEY, REGION)
 
 # ## Inspect the Data
 
 # In[5]:
 
 
-print(df.head())
+print(prices.head())
 
 
 # In[6]:
 
 
-print(df.schema)
+print(prices.schema)
 
 
 # In[7]:
 
 
-print(df.describe())
+print(prices.describe())
 
 
 # In[8]:
 
 
-print(df.shape)
+print(prices.shape)
 
 
 # ## Basic Filtering & Grouping
@@ -88,7 +88,7 @@ print(df.shape)
 
 
 # filter: GLD > 180
-high_gold = df.filter(pl.col("GLD") > 180)
+high_gold = prices.filter(pl.col("GLD") > 180)
 print(high_gold.shape)
 
 
@@ -96,14 +96,14 @@ print(high_gold.shape)
 
 
 # Normalize Date dtype (works whether it's already date or a string)
-df = df.with_columns(pl.col("Date").cast(pl.Date))
+prices = prices.with_columns(pl.col("Date").cast(pl.Date))
 
 # Add Year column
-df = df.with_columns(pl.col("Date").dt.year().alias("Year"))
+prices = prices.with_columns(pl.col("Date").dt.year().alias("Year"))
 
 # Group by Year and compute average GLD
-yearly_avg = df.group_by("Year").agg(pl.col("GLD").mean().alias("avg_GLD"))
-print(yearly_avg)
+yearly_avg_gld = prices.group_by("Year").agg(pl.col("GLD").mean().alias("avg_GLD"))
+print(yearly_avg_gld)
 
 
 # ## Visualization
@@ -111,26 +111,32 @@ print(yearly_avg)
 # In[11]:
 
 
-# Histogram -- save plots as files
-gld = df["GLD"].to_numpy()
-sns.histplot(gld, bins=30, kde=True)
-plt.title("Distribution of Gold Prices (2015–2025)")
-plt.xlabel("GLD Price")
-plt.ylabel("Frequency")
-plt.tight_layout()
-plt.savefig("outputs/gld_hist.png", dpi=150)
-plt.clf()  # clear the figure for the next plot
+def plot_gld_hist(prices: pl.DataFrame, outpath: str = "outputs/gld_hist.png") -> None:
+    gld_values = prices["GLD"].to_numpy()
+    sns.histplot(gld_values, bins=30, kde=True)
+    plt.title("Distribution of Gold Prices (2015–2025)")
+    plt.xlabel("GLD Price")
+    plt.ylabel("Frequency")
+    plt.tight_layout()
+    plt.savefig(outpath, dpi=150)
+    plt.clf()
 
-# Scatter: SPX vs GLD -- save plots as files
-spx = df["SPX"].to_numpy()
-gld = df["GLD"].to_numpy()
-sns.scatterplot(x=spx, y=gld)
-plt.title("SPX vs Gold (GLD)")
-plt.xlabel("S&P 500 (SPX)")
-plt.ylabel("Gold (GLD)")
-plt.tight_layout()
-plt.savefig("outputs/spx_vs_gld.png", dpi=150)
-plt.clf()
+
+def plot_spx_vs_gld(prices: pl.DataFrame, outpath: str = "outputs/spx_vs_gld.png") -> None:
+    spx = prices["SPX"].to_numpy()
+    gld = prices["GLD"].to_numpy()
+    sns.scatterplot(x=spx, y=gld)
+    plt.title("SPX vs Gold (GLD)")
+    plt.xlabel("S&P 500 (SPX)")
+    plt.ylabel("Gold (GLD)")
+    plt.tight_layout()
+    plt.savefig(outpath, dpi=150)
+    plt.clf()
+
+os.makedirs("outputs", exist_ok=True)
+plot_gld_hist(prices)
+plot_spx_vs_gld(prices)
+
 
 
 # ## ML Exploration
@@ -138,20 +144,20 @@ plt.clf()
 # In[12]:
 
 # Convert Polars → NumPy for sklearn
-X = df.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
-y = df["GLD"].to_numpy()
+features = prices.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
+target = prices["GLD"].to_numpy()
 
 # Split data
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    features, target, test_size=0.2, random_state=42
 )
 
-# Fit model
-model = LinearRegression()
-model.fit(X_train, y_train)
+# Fit linreg_model
+linreg_model = LinearRegression()
+linreg_model.fit(X_train, y_train)
 
 # Predictions
-y_pred = model.predict(X_test)
+y_pred = linreg_model.predict(X_test)
 
 # Metrics
 r2 = r2_score(y_test, y_pred)
@@ -166,16 +172,16 @@ print("RMSE:", rmse)
 # In[13]:
 
 # Features/target from Polars to NumPy
-X = df.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
-y = df["GLD"].to_numpy()
+features = prices.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
+target = prices["GLD"].to_numpy()
 
 # Split data
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    features, target, test_size=0.2, random_state=42
 )
 
 # Fit XGBoost Regressor
-model = XGBRegressor(
+xgb_model = XGBRegressor(
     n_estimators=500,  # number of trees
     learning_rate=0.05,  # step size shrinkage
     max_depth=4,  # complexity of trees
@@ -186,11 +192,11 @@ model = XGBRegressor(
     n_jobs=-1,
 )
 
-model.fit(X_train, y_train)
+xgb_model.fit(X_train, y_train)
 
 # Predictions
-y_train_pred = model.predict(X_train)
-y_test_pred = model.predict(X_test)
+y_train_pred = xgb_model.predict(X_train)
+y_test_pred = xgb_model.predict(X_test)
 
 
 # Metrics

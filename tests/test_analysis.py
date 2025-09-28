@@ -39,7 +39,7 @@ def make_synthetic_csv(n_rows: int = 400) -> str:
         + rng.normal(0, 3, size=n_rows)
     )
 
-    df = pl.DataFrame(
+    prices = pl.DataFrame(
         {
             "Date": [d.isoformat() for d in dates],
             "SPX": spx,
@@ -49,7 +49,7 @@ def make_synthetic_csv(n_rows: int = 400) -> str:
             "EUR/USD": eurusd,
         }
     )
-    return df.write_csv()
+    return prices.write_csv()
 
 
 class _FakeBody:
@@ -113,26 +113,26 @@ def test_end_to_end_runs_and_saves_plots(clean_outputs, capsys):
 
 def test_dataframe_basic_properties():
     mod = import_fresh_analysis()
-    assert hasattr(mod, "df"), "analysis.py must expose `df`"
-    df = mod.df
-    assert df.shape[0] > 100
+    assert hasattr(mod, "prices"), "analysis.py must expose `prices`"
+    prices = mod.prices
+    assert prices.shape[0] > 100
 
     # Accept either the original 6 columns OR the same 6 + 'Year'
     base = {"Date", "SPX", "GLD", "USO", "SLV", "EUR/USD"}
-    cols = set(df.columns)
+    cols = set(prices.columns)
     assert base.issubset(cols), f"Missing expected columns. Got: {cols}"
 
-    assert df["SPX"].dtype == pl.Float64
-    assert df["GLD"].dtype == pl.Float64
+    assert prices["SPX"].dtype == pl.Float64
+    assert prices["GLD"].dtype == pl.Float64
 
 
 def test_filtering_and_grouping():
     mod = import_fresh_analysis()
     assert hasattr(mod, "high_gold")
-    assert hasattr(mod, "yearly_avg")
+    assert hasattr(mod, "yearly_avg_gld")
 
     hg = mod.high_gold
-    ya = mod.yearly_avg
+    ya = mod.yearly_avg_gld
 
     # Robust predicate check in Polars: min(GLD) > 180 when any rows exist
     if hg.shape[0] > 0:
@@ -150,8 +150,8 @@ def test_linear_regression_metrics_reasonable():
     from sklearn.metrics import r2_score, mean_squared_error
 
     mod = import_fresh_analysis()
-    X = mod.df.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
-    y = mod.df["GLD"].to_numpy()
+    X = mod.prices.select(["SPX", "USO", "SLV", "EUR/USD"]).to_numpy()
+    y = mod.prices["GLD"].to_numpy()
 
     Xtr, Xte, ytr, yte = train_test_split(X, y, test_size=0.2, random_state=42)
     m = LinearRegression().fit(Xtr, ytr)
