@@ -3,7 +3,8 @@
 ## Note for Week 5 Graders
 Scroll down to see the Week 5 updates. Everything above reflects the Week 3 submission (kept unchanged for ease of Week 3 grading as of September 2025). The new Week 5 Commentary begins below the Week 5 header.
 
-### TA said my WK3 README is already fine so no need to change it, will start fresh as we use a new repo
+TA said my WK3 README is already fine so no need to change it, will start fresh as we use a new repo
+
 
 
 # IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker)
