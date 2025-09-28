@@ -1,4 +1,4 @@
-![CI](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml)
 
 # IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker)
 
