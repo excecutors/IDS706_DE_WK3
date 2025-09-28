@@ -102,8 +102,7 @@ prices = prices.with_columns(pl.col("Date").cast(pl.Date))
 prices = prices.with_columns(pl.col("Date").dt.year().alias("Year"))
 
 # Group by Year and compute average GLD
-yearly_avg_gld = prices.group_by("Year").agg(
-    pl.col("GLD").mean().alias("avg_GLD"))
+yearly_avg_gld = prices.group_by("Year").agg(pl.col("GLD").mean().alias("avg_GLD"))
 print(yearly_avg_gld)
 
 
@@ -112,10 +111,7 @@ print(yearly_avg_gld)
 # In[11]:
 
 
-def plot_gld_hist(
-    prices: pl.DataFrame,
-    outpath: str = "outputs/gld_hist.png"
-) -> None:
+def plot_gld_hist(prices: pl.DataFrame, outpath: str = "outputs/gld_hist.png") -> None:
     gld_values = prices["GLD"].to_numpy()
     sns.histplot(gld_values, bins=30, kde=True)
     plt.title("Distribution of Gold Prices (2015–2025)")
@@ -127,8 +123,7 @@ def plot_gld_hist(
 
 
 def plot_spx_vs_gld(
-    prices: pl.DataFrame,
-    outpath: str = "outputs/spx_vs_gld.png"
+    prices: pl.DataFrame, outpath: str = "outputs/spx_vs_gld.png"
 ) -> None:
     spx = prices["SPX"].to_numpy()
     gld = prices["GLD"].to_numpy()
