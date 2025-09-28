@@ -1,5 +1,7 @@
 [![CI](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/excecutors/IDS706_DE_WK3/actions/workflows/ci.yml)
 
+## Scroll down for added updates for Week 5
+
 # IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker)
 
 This repo contains a **reproducible** and **testable** data analysis workflow using:
@@ -209,3 +211,25 @@ python analysis.py
 
   * `outputs/gld_hist.png`
   * `outputs/spx_vs_gld.png`
+  * 
+
+---
+
+## Week 5 addition (Refactoring + CI polish)
+
+In this iteration, the project was made more **professional and reproducible**:
+
+* **Refactoring**
+  * Renaming (for example, we renamed `df` → `prices` for clarity)
+  * Extract method/variable (for example, we extracted plotting code into clean functions)
+
+* **Code Quality**
+  * Added **Black** for auto-formatting.
+  * Added **Flake8** for linting.
+  * Fixed style issues (line length, blank lines, newline at EOF) so CI passes.
+
+* **Continuous Integration**
+  * Configured GitHub Actions to run `black --check`, `flake8`, and `pytest`.
+  * Added a CI badge to the README (see top of file).
+
+These changes improve readability and maintainability, making sure that every push is automatically tested and style-checked.
