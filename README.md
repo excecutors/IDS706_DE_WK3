@@ -215,7 +215,7 @@ python analysis.py
 
 ---
 
-## Week 5 addition (Refactoring + CI polish)
+## Week 5 Addition (Refactoring + CI polish)
 
 In this iteration, the project was made more **professional and reproducible**:
 
