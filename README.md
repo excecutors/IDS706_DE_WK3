@@ -2,7 +2,8 @@
 
 ## Scroll down for added updates for Week 5
 
-# IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker)
+
+# IDS706 Week 3 — Reproducible Data Analysis (Polars + ML + Tests + Docker) -- Not Updated per September 2025 to make it easier for graders to grade Week 3
 
 This repo contains a **reproducible** and **testable** data analysis workflow using:
 
