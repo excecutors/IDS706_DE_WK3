@@ -238,3 +238,10 @@ In this iteration, the project was made more **professional and reproducible**:
   * Added a CI badge to the README (see top of file).
 
 These changes improve readability and maintainability, making sure that every push is automatically tested and style-checked.
+
+
+---
+
+## Author
+Freddy Platinus  
+Master of Engineering in Financial Technology, Duke University
